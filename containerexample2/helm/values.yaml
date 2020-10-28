@@ -1,0 +1,7 @@
+app:
+  productCode: 1jvwme1n9wao4epdu6hi9y1rr
+  name: example
+  region: us-east-1
+  image: '453854455992.dkr.ecr.us-east-1.amazonaws.com/eks:v1'
+  replicas: 1
+  serviceAccountName: examplesa

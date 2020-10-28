@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+
+# kind: ServiceAccount
+# metadata:
+#   annotations:
+#     eks.amazonaws.com/role-arn: arn:aws:iam::453854455992:role/OscarEKSPodRole
+    
+kind: Deployment
+metadata:
+  name: {{ required "You need to provide a value for .Values.app" .Values.app.name}}
+  namespace: "default"
+spec:
+  replicas: {{.Values.app.replicas}}
+  selector:
+    matchLabels:
+      app: {{.Values.app.name}}
+  template:
+    metadata:
+      annotations:
+        rollme: {{ randAlphaNum 5 | quote }}
+      labels:
+        app: {{.Values.app.name}}
+    spec:
+      #serviceAccountName: {{.Values.app.name}}sa
+      serviceAccountName: {{.Values.app.serviceAccountName}}
+      containers:
+      - image: "{{.Values.app.image}}"
+        imagePullPolicy: Always
+        name: {{.Values.app.name}}
+        env:
+          - name: "AWS_REGION"
+            value: {{.Values.app.region}}
+        # env:          
+        #     - name: "AWS_ROLE_ARN"
+        #       value: "arn:aws:iam::453854455992:role/OscarEKSPodRole"
+        #     - name: "AWS_WEB_IDENTITY_TOKEN_FILE"
+        #       value: "/var/run/secrets/eks.amazonaws.com/serviceaccount/token"
+      # from the docu https://docs.aws.amazon.com/eks/latest/userguide/iam-roles-for-service-accounts-technical-overview.html
+      # securityContext:
+      #   fsGroup: 1337
